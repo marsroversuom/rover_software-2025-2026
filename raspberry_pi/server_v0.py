@@ -38,7 +38,7 @@ wheels = [
     kit.servo[4],  # mid-right  (unused by Rover.turn())
     kit.servo[5],  # rear-right
 ]
-
+happiness = 3
 class Rover():
     def __init__(self, wheels, max_turn_angle):
         '''
