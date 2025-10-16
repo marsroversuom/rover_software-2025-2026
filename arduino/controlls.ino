@@ -6,7 +6,7 @@ const int pwm_pins[N_MOTORS] = {3, 5, 6, 9, 10, 11};
 const int delay_ms = 2;
 
 // since unsigned chars also range from 0 to 255 this is perfect to fetch duties for each of the 6 motors
-// duty1 is duties[0] and etc
+// duties1 is duties[0] and etc
 unsigned char duties[6] = {127, 127, 127, 127, 127, 127};
 
 void setup() {
@@ -21,22 +21,33 @@ void setup() {
 // The signals from motor 1 and motor 2 interfere with eachother as they are controlled with the same driver (this shouldn't happen really)
 // This is a workaround
 
-// duty ranges from 0 to 255
-// 0 turns the motors CW while 255 CCW max speed. To stop use duty=127 or 128.
+// duties ranges from 0 to 255
+// 0 turns the motors CW while 255 CCW max speed. To stop use duties=127 or 128.
+void run_left_motors(){
+  digitalWrite(turn_on_pins[3], LOW);
+  digitalWrite(turn_on_pins[4], LOW);
+  digitalWrite(turn_on_pins[5], LOW);
 
-void run_motor(int motor_number, int duty){
-  for(int i = 0; i < N_MOTORS; i ++){
-    if(i != motor_number){
-      digitalWrite(turn_on_pins[i], LOW);
-    }
-  }
-  // if(duty == 127){
-  //   digitalWrite(turn_on_pins[motor_number], LOW);
-  // }
-  // else{
-    digitalWrite(turn_on_pins[motor_number], HIGH);
-    analogWrite(pwm_pins[motor_number], duty);
-  // }
+  digitalWrite(turn_on_pins[0], HIGH);
+  digitalWrite(turn_on_pins[1], HIGH);
+  digitalWrite(turn_on_pins[2], HIGH);
+  analogWrite(pwm_pins[0], duties[0]);
+  analogWrite(pwm_pins[1], duties[1]);
+  analogWrite(pwm_pins[2], duties[2]);
+  delay(delay_ms);
+}
+
+void run_right_motors(){
+  digitalWrite(turn_on_pins[0], LOW);
+  digitalWrite(turn_on_pins[1], LOW);
+  digitalWrite(turn_on_pins[2], LOW);
+
+  digitalWrite(turn_on_pins[3], HIGH);
+  digitalWrite(turn_on_pins[4], HIGH);
+  digitalWrite(turn_on_pins[5], HIGH);
+  analogWrite(pwm_pins[3], duties[3]);
+  analogWrite(pwm_pins[4], duties[4]);
+  analogWrite(pwm_pins[5], duties[5]);
   delay(delay_ms);
 }
 
@@ -48,8 +59,6 @@ void loop() {
       duties[i] = Serial.read(); // Store each byte into the duties array
     }
   }
-  
-  for(int i = 0; i < N_MOTORS; i ++){
-    run_motor(i, duties[i]);
-  }
+  run_left_motors();
+  run_right_motors();
 }
